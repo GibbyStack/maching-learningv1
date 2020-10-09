@@ -1,7 +1,6 @@
-import numpy as np
 import random
 
-irisDataSet = ([
+iris_DataSet = ([
 [5.1,3.5,1.4,0.2,"Iris-setosa"],
 [4.9,3.0,1.4,0.2,"Iris-setosa"],
 [4.7,3.2,1.3,0.2,"Iris-setosa"],
@@ -153,72 +152,47 @@ irisDataSet = ([
 [6.2,3.4,5.4,2.3,"Iris-virginica"],
 [5.9,3.0,5.1,1.8,"Iris-virginica"],
 ])
-trainSet = []
-testSet = []
-numberRandom = []
-rest = []
-aux = []
+train_Set = []
+test_Set = []
+list_Etiquetas = []
 
-def randomGenerate(x, y, z):
-    sample = round((50*x)/100)
-    while len(numberRandom) < sample:
+def separar_Clases():
+    for c in iris_DataSet:
         flag = False
-        num = random.randint(y, z)
-        for n in numberRandom:
-            if n == num:
-                flag = True
-                break
+        if c[4] in list_Etiquetas:
+            flag = True
         if not flag:
-            numberRandom.append(num)
-            aux.append(num)
+            list_Etiquetas.append(c[4])
 
-def train():
-    for n in numberRandom:
-        trainSet.append(irisDataSet[n])
-    numberRandom.clear()
+def prue(i):
+    cont = 0
+    for n in iris_DataSet:
+        if n[4] == list_Etiquetas[i]:
+            cont += 1
+    return cont
 
-def generateTrainSet(percentage):
-    randomGenerate(percentage, 0, 49)
-    train()
-    randomGenerate(percentage, 50, 99)
-    train()
-    randomGenerate(percentage, 100, 149)
-    train()
-    generateTestSet()
+def generar_Train_Test(portc):
+    i = 0
+    j = 0
+    for x in range(0, len(list_Etiquetas)):
+        sample = round((prue(j)*portc)/100)
+        while i < sample:
+            z = len(iris_DataSet)-1
+            num = random.randint(0, z)
+            iris = iris_DataSet[num]
+            if iris[4] == list_Etiquetas[x]:
+                if num == iris_DataSet.index(iris):
+                    train_Set.append(iris_DataSet.pop(num))
+                    i += 1
+        j += 1
+        i = 0
 
-def restantes():
-    for i in range (0, 150):
-        flag = False
-        for n in aux:
-            if i == n:
-                flag = True
-                break
-        if not flag:
-            rest.append(i)
-
-def generateTestSet():
-    restantes()
-    for n in rest:
-        testSet.append(irisDataSet[n])
-
-generateTrainSet(10)
-
-print(trainSet)
-print(len(trainSet))
-print(testSet)
-print(len(testSet))
-
-
-
-
-
-
-
-
-
-
-
-
-
+separar_Clases()
+generar_Train_Test(0)
+test_Set = iris_DataSet
+print(train_Set)
+print(len(train_Set))
+print(test_Set)
+print(len(test_Set))
 
 
