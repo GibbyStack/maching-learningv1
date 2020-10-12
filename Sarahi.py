@@ -1,7 +1,5 @@
 import random
-import numpy as np
-
-iris_DataSet = ([
+DataSet = ([
 [5.1,3.5,1.4,0.2,"Iris-setosa"],
 [4.9,3.0,1.4,0.2,"Iris-setosa"],
 [4.7,3.2,1.3,0.2,"Iris-setosa"],
@@ -153,50 +151,41 @@ iris_DataSet = ([
 [6.2,3.4,5.4,2.3,"Iris-virginica"],
 [5.9,3.0,5.1,1.8,"Iris-virginica"],
 ])
-train_Set = []
-test_Set = []
-list_Etiquetas = []
+ListClass = []
+TrainSet = []
+TestSet = []
 
-def separar_Clases():
-    for c in iris_DataSet:
-        if c[4] in list_Etiquetas:
+def NumClass():
+    for elemento in DataSet:
+        if elemento[4] in ListClass:
             continue
         else:
-            list_Etiquetas.append(c[4])
-
-def contar_Clase(i):
-    cont = 0
-    for n in iris_DataSet:
-        if n[4] == list_Etiquetas[i]:
-            cont += 1
-    return cont
-
-def generar_Train_Test(portc):
-    for x in range(0, len(list_Etiquetas)):
-        i = 0
-        porcentaje = (contar_Clase(x)*portc)/100
-        while i < porcentaje:
-            num = random.randint(0, len(iris_DataSet)-1)
-            iris = iris_DataSet[num]
-            if iris[4] == list_Etiquetas[x]:
-                train_Set.append(iris_DataSet.pop(num))
-                i += 1
-
-def distance(P, Q):
-    return np.sqrt(np.sum((P - Q)**2))
-
-def distanciaPunto(P,Q):
-    D = []
-    for p in P:
-        D.append(distance(p, Q))
-    return D
-
-separar_Clases()
-generar_Train_Test(50)
-test_Set = iris_DataSet
-print(train_Set)
-print(len(train_Set))
-print(test_Set)
-print(len(test_Set))
+            ListClass.append(elemento[4])
 
 
+def CountElem(posision):
+    count = 0
+    for elemento in DataSet:
+        if elemento[4] == ListClass[posision]:
+            count = count + 1
+    return count
+
+
+def TrainSet_Llena(porc):
+    for clase in range(0, len(ListClass)):
+        inicio = 0
+        porcentaje = (CountElem(clase)*porc)/100
+        while inicio < porcentaje:
+            numRandom = random.randint(0, len(DataSet) - 1)
+            elemento = DataSet[numRandom]
+            if ListClass[clase] == elemento[4]:
+                TrainSet.append(DataSet.pop(numRandom))
+                inicio = inicio + 1
+
+NumClass()
+TrainSet_Llena(20)
+TestSet = DataSet
+print(TrainSet)
+print(len(TrainSet))
+print(TestSet)
+print(len(TestSet))
