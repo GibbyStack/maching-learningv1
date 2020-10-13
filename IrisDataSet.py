@@ -1,6 +1,8 @@
+#importar librerias que se necesitaran
 import random
 import numpy as np
 
+#Declaracion del DataSet Iris-Plant con 150 elemento
 iris_DataSet = ([
 [5.1,3.5,1.4,0.2,"Iris-setosa"],
 [4.9,3.0,1.4,0.2,"Iris-setosa"],
@@ -153,50 +155,116 @@ iris_DataSet = ([
 [6.2,3.4,5.4,2.3,"Iris-virginica"],
 [5.9,3.0,5.1,1.8,"Iris-virginica"],
 ])
+#Declaracion de matriz de entrenamiento
 train_Set = []
+#Declaracion de matriz de prueba
 test_Set = []
-list_Etiquetas = []
+#Lista para guardar las clases del DataSet
+list_Clases = []
 
+#Metodo para sacar las clases
 def separar_Clases():
+    #Recorrer el DataSet
     for c in iris_DataSet:
-        if c[4] in list_Etiquetas:
+        #Si la clase encontrada ya existe en la Lista de Clases
+        if c[4] in list_Clases:
+            #Pasar a la siguiente iteracion
             continue
+        #Si no existe
         else:
-            list_Etiquetas.append(c[4])
+            #Agregarla a la lista
+            list_Clases.append(c[4])
 
+#Metodo para contar los elementos por clase
 def contar_Clase(i):
+    #Contador de elementos por clase se inicializa en 0
     cont = 0
+    #Recorrer el DataSet
     for n in iris_DataSet:
-        if n[4] == list_Etiquetas[i]:
+        #Si la clase del elemento del DataSet es igual a la clase de lista de clase
+        if n[4] == list_Clases[i]:
+            #Se incrementa el contador
             cont += 1
+    #Se retorna el contador
     return cont
 
+#Metodo para generar la matriz Train y Test
 def generar_Train_Test(portc):
-    for x in range(0, len(list_Etiquetas)):
+    #LLamar metodo para separar las clases
+    separar_Clases()
+    #Iterar por cada clase de la lista de clases
+    for x in range(0, len(list_Clases)):
+        #Se inicializa el contador en 0
         i = 0
+        #Sacar el porcentaje de la clase total de elementos por clase * porcentaje / 100
         porcentaje = (contar_Clase(x)*portc)/100
+        #Mientras el contador sea menor al porcentaje
         while i < porcentaje:
+            #Generar numero random entre el numero 0 y la longitud del DataSet - 1
             num = random.randint(0, len(iris_DataSet)-1)
+            #Sacar elemento del DataSet con el numero Random
             iris = iris_DataSet[num]
-            if iris[4] == list_Etiquetas[x]:
+            #Si la clase del elemento iris es igual a la clase iterada
+            if iris[4] == list_Clases[x]:
+                #Sacar un elemento del DataSet e incertarlo en el Train
                 train_Set.append(iris_DataSet.pop(num))
+                #Se incrementa el contador
                 i += 1
 
+#Metodo para sacar la distancia entre dos puntos
 def distance(P, Q):
+    #Retorna el valor de la raiz cuadrada de la suma del cuadrado de la resta entre dos puntos
     return np.sqrt(np.sum((P - Q)**2))
 
-def distanciaPunto(P,Q):
+#Metodo para comparar una lista de puntos con 1
+def distanciaPunto(ptrain, puntoTest):
+    #Matriz D se inicializa vacia
     D = []
-    for p in P:
-        D.append(distance(p, Q))
-    return D
+    #Se recorre la matriz mandada a traves del parametro
+    for puntoTrain in ptrain:
+        #Se inserta en la matriz D la distancia generada por dos puntos
+        D.append(distance(puntoTest, puntoTrain))
+        #Se guarda ese valor de distancia para imprimirlo
+        di = distance(puntoTest, puntoTrain)
+        print("Punto Test:", puntoTest, "Punto Train:", puntoTrain, "Distancia:", di)
+    #Se crea una matriz para sacar el valor minimo
+    dist = np.array(D)
+    #Se imprime la distancia minima
+    print("Distancia minima:", dist.min())
 
-separar_Clases()
-generar_Train_Test(50)
+#Metodo para generar la minima distancia
+def minima_Distancia():
+    #Se crean dos variables auxiliares
+    pTrain = []
+    pTest = []
+    #Recorrer la matriz de entrenamiento
+    for train in train_Set:
+        #Eliminar la etiqueta(clase) del elemento
+        train.pop(-1)
+        #Añadir ese elemento a la matriz auxiliar
+        pTrain.append(train)
+    #Convertir la matriz a numpy
+    pTrain = np.array(pTrain)
+    # Recorrer la matriz de entrenamiento
+    for test in test_Set:
+        # Eliminar la etiqueta(clase) del elemento
+        test.pop(-1)
+        # Añadir ese elemento a la matriz auxiliar
+        pTest.append(test)
+    # Convertir la matriz a numpy
+    pTest = np.array(pTest)
+    #Recorrer la matriz Test numpy
+    for puntoTest in pTest:
+        #Llamada del metodo para generar la distancia
+        distanciaPunto(pTrain, puntoTest)
+
+
+
+#Llama de metodos e impresion de resultados
+generar_Train_Test(10)
 test_Set = iris_DataSet
 print(train_Set)
 print(len(train_Set))
 print(test_Set)
 print(len(test_Set))
-
-
+minima_Distancia()
