@@ -227,10 +227,8 @@ def distanciaPunto(ptrain, puntoTest):
         #Se guarda ese valor de distancia para imprimirlo
         di = distance(puntoTest, puntoTrain)
         print("Punto Test:", puntoTest, "Punto Train:", puntoTrain, "Distancia:", di)
-    #Se crea una matriz para sacar el valor minimo
-    dist = np.array(D)
     #Se imprime la distancia minima
-    print("Distancia minima:", dist.min())
+    print("Distancia minima:", min(D))
 
 #Metodo para generar la minima distancia
 def minima_Distancia():
