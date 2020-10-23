@@ -164,22 +164,49 @@ matC = []
 
 
 def separar_Clases():
+    """Metodo para separar las clases
+    Se recorre el array iris_DataSet con un foreach:
+        Se compara si la clase del elemento existe en la lista de clases (list_Clases):
+            Se avanza a la siguiente iteracion
+        Si no existe:
+            Se agrega la clase del elemnto a la lista de clases (list_Clases)
+    """
     for c in iris_DataSet:
-        if c[4] in list_Clases:
+        if c[-1] in list_Clases:
             continue
         else:
-            list_Clases.append(c[4])
+            list_Clases.append(c[-1])
 
 
 def contar_Clase(i):
+    """Metodo para contar los elementos de clase con un parametro que sera la posicion i
+    Se declara un contador en 0 (cont)
+    Se recorre el array iris_DataSet con un foreach:
+        Se comparar si la clase del elemento es igual a la clase de la lista de clases en la posicion que se paso como parametro:
+            Se incrementa el contador cont
+    Se retorna el contador
+    """
     cont = 0
     for n in iris_DataSet:
-        if n[4] == list_Clases[i]:
+        if n[-1] == list_Clases[i]:
             cont += 1
     return cont
 
 
 def generar_Train_Test(portc):
+    """Metodo para generar el Train y Test con un parametro que sacara el porcentaje (portc) de los elementos
+        Se manda llamar el metodo para separar clases
+        Se manda llamar el metodo para llenar la matriz matC
+        Se recorre el array list_Clases del 0 a su longitud, para obtener los index (x) de elementos del array:
+            Se declara la variable i en 0
+            Se declara una variable percentage que sera igual a los (elementos de clase con ayuda del metodo contar_Clases(x) por el paremetro (portc)) entre 100
+            Un ciclo while mientras i sea menor a percentage:
+                Se declara un numero random entre el 0 y la longitud de iris_Dataset -1 (num)
+                Se declara un elemento iris que es igual al elemento sacado random iris_DataSet[num]
+                Se compara si la clase del elemento iris (iris[-1]) es igual a la clase de la lista de clases (list_Clases[x]):
+                    Se agrega el elemento a train_Set que se elimino con pop de iris_DataSet en la posicion num
+                    Se incrementa el contador i
+    """
     separar_Clases()
     llenadoMatriz()
     for x in range(0, len(list_Clases)):
@@ -188,16 +215,26 @@ def generar_Train_Test(portc):
         while i < percentage:
             num = random.randint(0, len(iris_DataSet) - 1)
             iris = iris_DataSet[num]
-            if iris[4] == list_Clases[x]:
+            if iris[-1] == list_Clases[x]:
                 train_Set.append(iris_DataSet.pop(num))
                 i += 1
 
 
 def distance(P, Q):
+    """Metodo para sacar la distancia entre dos puntos con dos parametros P y Q
+    Se retorna la raiz cuadrada de la sumatoria del cuadrado de la resta entre P y Q
+    """
     return np.sqrt(np.sum((P - Q) ** 2))
 
 
 def llenadoMatriz():
+    """Metodo para llenar la matriz de 0 (Numero de clases) X (Numero de clases)
+    Se recorre un for del 0 hasta la longitud de la lista de clases (3):
+        se crea una lista vacia
+        Se vuelve a recorre un for del 0 hasta la longitud de la lista de clases (3):
+            Se le agregan 0 a la lista
+        Se agrega la lista con tres ceros a la matriz de confusion (matC)
+    """
     for i in range(0, len(list_Clases)):
         list = []
         for j in range(0, len(list_Clases)):
@@ -206,6 +243,14 @@ def llenadoMatriz():
 
 
 def matrizConfusion(clases):
+    """Metodo para contar los elementos por clase con un parametro una lista con 2 clases
+    Se recorre un for del 0 hasta la longitud de la lista de clases (3):
+        se compara si la primer clase de la lista que se paso de parametro es igual a la clase de la lista de clases en la posicion de i:
+            Se vuelve a recorre un for del 0 hasta la longitud de la lista de clases (3):
+                se vuelve a comparar si la segunda clase de la lista que se paso de parametro es igual a la clase de la lista de clases en la posicion de j:
+                    se declara un contador (c) que sera igual al valor de el elemento en la matriz de confucion en la posicion ij (matC[i][j])
+                    se asina al elemento matC[i][j] el valor del contador (c) mas 1
+    """
     for i in range(0, len(list_Clases)):
         if clases[0] == list_Clases[i]:
             for j in range(0, len(list_Clases)):
@@ -215,6 +260,19 @@ def matrizConfusion(clases):
 
 
 def distanciaPunto(ptrain, puntoTest, claseTest):
+    """Metodo para comparar un elementos con un array de elementos con 3 pararmetros, (array, elemento, clase del elemento)
+    Se crea una lista para las distancias (D)
+    Se crea una lista auxiliar (C) para guardar los clases de los 2 puntos
+    Se recorre el array pTrain del 0 a su longitud, para obtener los index de elementos del array:
+        Se agrega a D la distancia entre el puntoTest y el punto ptrain con ayuda del metodo distance que rquiere dos parametros el punto P y Q
+        Se declara un elemento que sera igual a la distancia entre los mismos puntos
+        Se agrega a C la clase del punto test y la clase del punto train
+        Se imprime el puntoTest, el puntoTrain y su distancia
+    Se imprime la distancia minima dentro de D
+    Se declara un index que sera igual a la posicion de la minima distancia dentro de D
+    Se manda a llamar el metodo matrizconfusion que necesita de parametro una lista con dos clases, se le manda el elemento de C[index]
+    Se imprimen separadores
+    """
     D = []
     C = []
     for puntTrain in range(0, len(ptrain)):
@@ -223,13 +281,24 @@ def distanciaPunto(ptrain, puntoTest, claseTest):
         C.append([claseTest, aux_train[puntTrain]])
         print("Punto Test:", puntoTest, "Punto Train:", ptrain[puntTrain], "Distancia:", di)
     print(min(D))
-    n = D.index(min(D))
-    matrizConfusion(C[n])
+    index = D.index(min(D))
+    matrizConfusion(C[index])
     print("-" * 91)
     print("-" * 91)
 
 
 def minima_Distancia():
+    """Metodo para eliminar la etiqueta al test y train y asi poder sacar la minima distancia
+    se crea una lista pTest
+    se crea una lista pTrain
+    Con un forech se recorre la lista train.Set:
+        se agrega a la lista auxiliar la etiqueta del elemento train que se le removio con el pop
+        se agrega a pTrain el elemento train ya sin etiqueta
+    Se convierte la lista pTrain a un array numpy
+    Mismo procedimiento pero ahora con el test_Set
+    Se recorre el array pTest del 0 a su longitud, para obtener los index de elementos del array:
+        Se llama el metodo distancia punto que requiere un array(train), un elemento de pTest, y la etiqueta del elemento pTest
+    """
     pTrain = []
     pTest = []
     for train in train_Set:
@@ -245,6 +314,15 @@ def minima_Distancia():
 
 
 def exactitudMatriz():
+    """Metodo para sacar la exactitud de la clasificacion de las clases
+    se declara el contador en 0
+    Se recorre el array matC del 0 a su longitud, para obtener los index (i) de elementos del array:
+        Se vuelve a recorrer el array matC del 0 a su longitud, para obtener los index(j) de elementos del array:
+            Se compara si los index i y j son iguales:
+                sumatoria sera igual a la sumatoria mas el elemento matC[i][j]
+    Se declara la exactitud que sera igual a la (sumatoria por 100) entre la longitud de elementos del tes_Set
+    Se retorna la exactitud
+    """
     sumatoria = 0
     for i in range(0, len(matC)):
         for j in range(0, len(matC)):
@@ -253,13 +331,19 @@ def exactitudMatriz():
     exactitud = (sumatoria * 100 / len(test_Set))
     return exactitud
 
+
+#Se llama el metodo para generar el train y tes y se le pasa el porcentaje que queremos en el train
 generar_Train_Test(70)
+#Se asigna que test_Set sera igual a los elementos de restaron de iris_DataSet
 test_Set = iris_DataSet
+#Se imprimen las listas y matrices
 print(train_Set)
 print(len(train_Set))
 print(test_Set)
 print(len(test_Set))
+#Se llama al metodo para sacar la minima distancia
 minima_Distancia()
+#Se imprime la matriz de confusion y la exactitud
 print("Matriz de confusion:", matC)
 print("Exactitud de clasificacion:", exactitudMatriz())
 
