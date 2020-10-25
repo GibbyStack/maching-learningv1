@@ -280,9 +280,10 @@ def distanciaPunto(ptrain, puntoTest, claseTest):
         di = distance(puntoTest, ptrain[puntTrain])
         C.append([claseTest, aux_train[puntTrain]])
         print("Punto Test:", puntoTest, "Punto Train:", ptrain[puntTrain], "Distancia:", di)
-    print(min(D))
     index = D.index(min(D))
     matrizConfusion(C[index])
+    print(min(D))
+    print("Clase Test:", C[index][0], "/ Clase Train:", C[index][1])
     print("-" * 91)
     print("-" * 91)
 
